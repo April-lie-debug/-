@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合肥一个月天气预报</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <style>
+        body {
+            background-image: url('https://file.moyublog.com/free_wallpapers_files/ltsum4thy25.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        table {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .music-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3490dc;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.3s ease;
+        }
+
+        .music-button:hover {
+            background-color: #2779bd;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 p-8">
+    <audio id="background-music" loop>
+        <source src="{{ url_for('static', filename='music/your-music-file.mp3') }}" type="audio/mpeg">
+        你的浏览器不支持音频播放。
+    </audio>
+    <div id="play-button" class="music-button">
+        <i class="fa-solid fa-play"></i>
+    </div>
+    <h1 class="text-3xl font-bold text-center mb-8 text-white">合肥一个月天气预报</h1>
+    <p class="text-center text-white mb-4">当前空气质量指数: {{ aqi }}</p>
+    <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden shadow-md">
+        <thead class="bg-blue-500 text-white">
+            <tr>
+                <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">日期</th>
+                <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">最高温度
+                </th>
+                <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">最低温度
+                </th>
+                <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">天气类型</th>
+                <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">风力风向</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for forecast in forecasts %}
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap">{{ forecast.date }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ forecast.maxtemp }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ forecast.mintemp }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    {{ forecast.condition }}
+                    {% if '晴' in forecast.condition %}
+                    <i class="fa-solid fa-sun text-yellow-500"></i>
+                    {% elif '云' in forecast.condition %}
+                    <i class="fa-solid fa-cloud text-gray-500"></i>
+                    {% elif '雨' in forecast.condition %}
+                    <i class="fa-solid fa-cloud-rain text-blue-500"></i>
+                    {% elif '雪' in forecast.condition %}
+                    <i class="fa-solid fa-snowflake text-white"></i>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ forecast.wind }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script>
+        const audio = document.getElementById('background-music');
+        const playButton = document.getElementById('play-button');
+        const playIcon = playButton.querySelector('i');
+
+        playButton.addEventListener('click', function () {
+            if (audio.paused) {
+                audio.play();
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.add('fa-pause');
+            } else {
+                audio.pause();
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+            }
+        });
+    </script>
+</body>
+
+</html>
+    
