@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合肥一周天气预报</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <style>
+        body {
+            background-image: url('https://file.moyublog.com/free_wallpapers_files/ltsum4thy25.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: 'Inter', sans-serif;
+            color: #333;
+        }
+
+       .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+       .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+       .music-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3490dc;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+       .music-button:hover {
+            background-color: #2779bd;
+            transform: scale(1.1);
+            box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.2), 0 4px 8px -1px rgba(0, 0, 0, 0.12);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #0056b3;
+        }
+
+        td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 调整图片样式 */
+        #imgPath {
+            max-width: 300px;
+            height: auto;
+            border-radius: 0.5rem;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+           .container {
+                padding: 1rem;
+            }
+
+           .music-button {
+                width: 40px;
+                height: 40px;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            #imgPath {
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <audio id="background-music" loop>
+            <source src="{{ url_for('static', filename='music/your-music-file.mp3') }}" type="audio/mpeg">
+            你的浏览器不支持音频播放。
+        </audio>
+        <div id="play-button" class="music-button">
+            <i class="fa-solid fa-play"></i>
+        </div>
+        <h1>合肥一周天气预报</h1>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">日期</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">最高温度</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">最低温度</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">天气类型</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">风力风向</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for forecast in forecasts %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ forecast.date }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ forecast.maxtemp }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ forecast.mintemp }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {{ forecast.condition }}
+                            {% if '晴' in forecast.condition %}
+                            <i class="fa-solid fa-sun text-yellow-500"></i>
+                            {% elif '云' in forecast.condition %}
+                            <i class="fa-solid fa-cloud text-gray-500"></i>
+                            {% elif '雨' in forecast.condition %}
+                            <i class="fa-solid fa-cloud-rain text-blue-500"></i>
+                            {% elif '雪' in forecast.condition %}
+                            <i class="fa-solid fa-snowflake text-white"></i>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ forecast.wind }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a href="{{ precipitation_img_url }}" target="_blank">
+        <img id="imgPath" alt="" src="https://weather.cma.cn/file/2025/04/22/SEVP_NMC_STFC_SFER_ER24_ACHN_L88_P9_20250422070002400.jpg?v=1745291145642" onerror="this.onerror='';this.src='/assets/cma/img/default.png';this.alt='图片不存在'">
+    </a>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script>
+        const audio = document.getElementById('background-music');
+        const playButton = document.getElementById('play-button');
+        const playIcon = playButton.querySelector('i');
+
+        playButton.addEventListener('click', function () {
+            if (audio.paused) {
+                audio.play();
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.add('fa-pause');
+            } else {
+                audio.pause();
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+            }
+        });
+    </script>
+</body>
+
+</html>    
