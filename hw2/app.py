@@ -8,8 +8,7 @@ weather_fetcher = WeatherFetcher()
 @app.route('/')
 def index():
     forecasts = weather_fetcher.get_weather_forecast("101220101")
-    aqi = weather_fetcher.get_aqi("101220101")
-    return render_template('index.html', forecasts=forecasts, aqi=aqi)
+    return render_template('index.html', forecasts=forecasts)
 
 
 if __name__ == '__main__':

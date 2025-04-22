@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 class WeatherFetcher:
     def __init__(self):
         self.base_url = "https://www.weather.com.cn/weather/"
-        self.aqi_url = "https://www.weather.com.cn/air/"
 
     def get_weather_forecast(self, city_code):
         try:
@@ -46,27 +45,5 @@ class WeatherFetcher:
         except Exception as e:
             print(f"解析数据出错: {e}")
             return []
-
-    def get_aqi(self, city_code):
-        try:
-            url = self.aqi_url + city_code + ".shtml"
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"}
-            response = requests.get(url, headers=headers)
-            response.raise_for_status()
-            response.encoding = response.apparent_encoding
-            soup = BeautifulSoup(response.text, 'html.parser')
-            aqi_div = soup.find('div', class_='tqInfo')
-            if aqi_div:
-                aqi_span = aqi_div.find('span', class_='cbol_aqi_num')
-                if aqi_span:
-                    return aqi_span.text.strip()
-            return "暂无数据"
-        except requests.RequestException as e:
-            print(f"请求出错: {e}")
-            return "暂无数据"
-        except Exception as e:
-            print(f"解析数据出错: {e}")
-            return "暂无数据"
 
     
